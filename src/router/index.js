@@ -9,7 +9,7 @@ const routes = [
     component: Shop,
     meta: {
       layout: 'main',
-      auth: true
+      auth: false
     }
   },
   {
@@ -18,7 +18,7 @@ const routes = [
     component: () => import('@/views/Product.vue'),
     meta: {
       layout: 'main',
-      auth: true
+      auth: false
     },
     props: true
   },
@@ -28,7 +28,7 @@ const routes = [
     component: () => import('@/views/Cart.vue'),
     meta: {
       layout: 'main',
-      auth: true
+      auth: false
     }
   },
   {
@@ -39,8 +39,16 @@ const routes = [
       layout: 'auth',
       auth: false
     }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/Admin.vue'),
+    meta: {
+      layout: 'auth',
+      auth: true
+    }
   }
-
 ]
 
 const router = createRouter({
