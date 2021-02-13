@@ -225,6 +225,16 @@ h3 {
     align-items: center;
 }
 
+.card-filter {
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    border-radius: 4px;
+    padding: 0;
+    display: flex;
+}
+
 .list {
     margin: 0;
     padding: 0;

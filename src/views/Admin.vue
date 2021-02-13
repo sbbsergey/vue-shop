@@ -1,11 +1,3 @@
 <template>
-  <div class="card">
-    <h1>Admin</h1>
-  </div>
+  <router-view></router-view>
 </template>
-
-<script>
-export default {
-
-}
-</script>

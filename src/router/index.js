@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Shop from '@/views/Shop.vue'
 import store from '@/store'
 
 const routes = [
   {
     path: '/',
     name: 'Shop',
-    component: Shop,
+    component: () => import('@/views/Shop.vue'),
     meta: {
       layout: 'main',
       auth: false
@@ -43,9 +42,29 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
+    redirect: '/admin/products',
     component: () => import('@/views/Admin.vue'),
+    children: [
+      {
+        path: 'products',
+        component: () => import('@/views/admin/Products.vue')
+      },
+      {
+        path: 'product/:id',
+        component: () => import('@/views/admin/Product.vue'),
+        props: true
+      },
+      {
+        path: 'categories',
+        component: () => import('@/views/admin/Categories.vue')
+      },
+      {
+        path: 'playground',
+        component: () => import('@/views/admin/Playground.vue')
+      }
+    ],
     meta: {
-      layout: 'auth',
+      layout: 'admin',
       auth: true
     }
   }

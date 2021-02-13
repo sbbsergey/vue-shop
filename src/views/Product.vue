@@ -1,13 +1,26 @@
 <template>
-  <div class="card">
-    <h1>Product {{ id }}</h1>
-    <pre> {{ product }}</pre>
-  </div>
+  <app-loader v-if="loading" />
+  <app-page back header center :title="product.title" v-else>
+    <template #header></template>
+    <product-card :id="id">
+      <template #category="{ category }">
+        <p> Категория: <strong> {{ category }} </strong></p>
+      </template>
+    </product-card>
+  </app-page>
 </template>
 
 <script>
-import { onMounted } from 'vue'
+
+import AppLoader from '@/components/ui/AppLoader'
+import AppPage from '@/components/ui/AppPage'
 import { useStore } from 'vuex'
+import { onMounted, computed, ref } from 'vue'
+import { currency } from '@/utils/currency'
+import ProductCard from '@/components/products/ProductCard'
+import { useCategories } from '@/use/categories'
+import { useProducts } from '@/use/products'
+
 export default {
   props: {
     id: {
@@ -17,18 +30,33 @@ export default {
   },
   setup (props) {
     const store = useStore()
+    const loading = ref(true)
+    const {
+      load: loadCategories,
+      category
+    } = useCategories()
 
-    const product = store.dispatch('products/loadById', props.id)
-    console.log('product', product)
+    const {
+      loadById: LoadProductById,
+      product
+    } = useProducts(props)
 
-    onMounted(() => {
-      console.log('Component is mounted!')
-      console.log(props.id)
+    onMounted(async () => {
+      await loadCategories()
+      await LoadProductById()
+      loading.value = false
     })
 
+    const count = computed(() => store.getters['cart/get'](props.id))
+
     return {
-      product
+      loading,
+      product,
+      currency,
+      count,
+      category
     }
-  }
+  },
+  components: { AppLoader, AppPage, ProductCard }
 }
 </script>
