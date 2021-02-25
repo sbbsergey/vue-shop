@@ -4,14 +4,15 @@
 https://vue3-shop.web.app/
 
 ## Аутентификация
-#### Администратор
-email: 'admin@shop.ru'
-password: '123456'
+```
+Администратор
+email: admin@shop.ru
+password: 123456
 
-#### Покупатель
+Покупатель
 email: sergey@gmail.com
-password: '123456'
-
+password: 123456
+```
 ## Project setup
 ```
 npm install
