@@ -1,4 +1,16 @@
-# shop
+# vue-shop
+
+# Демонстрация приложения
+https://vue3-shop.web.app/
+
+## Аутентификация
+#### Администратор
+email: 'admin@shop.ru'
+password: '123456'
+
+#### Покупатель
+email: sergey@gmail.com
+password: '123456'
 
 ## Project setup
 ```
