@@ -15,6 +15,7 @@
     <admin-products-table-item v-for="(product, index) in products" :key="product.id"
                                :product="product"
                                :index="index"
+                               @open="open"
       >
     </admin-products-table-item>
     </tbody>
@@ -24,10 +25,16 @@
 <script>
 import AdminProductsTableItem from '@/components/admin/AdminProductsTableItem'
 export default {
+  emits: ['open'],
   props: {
     products: {
       type: Array,
       required: true
+    }
+  },
+  setup (_, { emit }) {
+    return {
+      open: (id) => emit('open', id)
     }
   },
   components: { AdminProductsTableItem }

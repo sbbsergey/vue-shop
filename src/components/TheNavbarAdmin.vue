@@ -4,13 +4,25 @@
 
     <ul class="navbar-menu">
       <li>
-        <router-link to="/admin/products">Инвентарь</router-link>
+        <router-link to="/admin/products">Товары</router-link>
       </li>
       <li>
         <router-link to="/admin/categories">Категории</router-link>
       </li>
       <li>
-        <router-link to="/">Выход</router-link>
+        <router-link to="/admin/orders">Заказы</router-link>
+      </li>
+      <li>
+        <router-link to="/">В магазин</router-link>
+      </li>
+      <li>
+        <a href="#" @click.prevent="logout">Выйти</a>
+      </li>
+      <li>
+        <user-logo
+          :is-admin="isAdmin"
+          :name="user.email"
+        />
       </li>
     </ul>
 
@@ -18,20 +30,24 @@
 </template>
 
 <script>
-import { useStore } from 'vuex'
+import { useUser } from '@/use/user'
+import UserLogo from '@/components/user/UserLogo'
 import { useRouter } from 'vue-router'
 
 export default {
   setup () {
-    const store = useStore()
     const router = useRouter()
+    const { isAdmin, user, logout: logoutUser } = useUser()
 
     return {
+      isAdmin,
+      user,
       logout: () => {
-        store.commit('auth/logout')
-        router.push('/auth')
+        logoutUser()
+        router.push('/')
       }
     }
-  }
+  },
+  components: { UserLogo }
 }
 </script>

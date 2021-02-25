@@ -1,34 +1,48 @@
 <template>
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Наименование</th>
-        <th>Количество</th>
-        <th>Цена (шт)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(_,id) in cart" :key="id">
-        <td>{{ title(id) }}</td>
-        <td>
-          <app-change-cart-count :id="id"></app-change-cart-count>
-        </td>
-        <td> {{ currency(price(id)) }} руб.</td>
-      </tr>
-      </tbody>
-    </table>
-    <hr>
-    <p class="text-right"><strong>Всего: {{ currency(total) }} руб.</strong></p>
-    <p class="text-right">
-      <button class="btn">Оплатить</button>
-    </p>
+    <h3 class="text-center" v-if="isEmpty">В корзине пока ничего нет</h3>
+    <template v-else>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Количество</th>
+          <th>Цена (шт)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <cart-table-item
+          v-for="(_,id) in cart"
+          :key="id"
+          :id="id"
+        />
+        </tbody>
+      </table>
+      <hr>
+      <p class="text-right"><strong>Всего: {{ currency(totalPrice) }} руб.</strong></p>
+      <p class="text-right">
+        <button class="btn" v-if="isAuth" @click="onPay">Оплатить</button>
+        <button class="btn" v-else
+                @click="authForm = true"
+        >Авторизоваться</button>
+      </p>
+      <app-dialog v-model="authForm">
+        <user-auth-form @onSubmit="authForm = false"/>
+      </app-dialog>
+    </template>
 </template>
 
 <script>
-import { useStore } from 'vuex'
-import { computed } from 'vue'
+
 import { currency } from '@/utils/currency'
-import AppChangeCartCount from '@/components/ui/AppChangeCartCount'
+import { useCart } from '@/use/cart'
+import CartTableItem from '@/components/cart/CartTableItem'
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import UserAuthForm from '@/components/user/UserAuthForm'
+import AppDialog from '@/components/ui/AppDialog'
+import { useUser } from '@/use/user'
+import { pay } from '@/utils/pay'
+import { useRouter } from 'vue-router'
 
 export default {
   props: {
@@ -37,26 +51,41 @@ export default {
       required: true
     }
   },
-  setup (props) {
+  setup () {
     const store = useStore()
+    const router = useRouter()
+    const authForm = ref(false)
+    const { totalPrice, isEmpty } = useCart()
+    const { user, isAuth } = useUser()
 
-    const title = id => store.getters['product/get'](id).title
-    const price = id => store.getters['product/get'](id).price
+    const onPay = async () => {
+      try {
+        await pay({
+          description: 'Оплата товаров по заказу',
+          amount: totalPrice.value,
+          accountId: user.value.email,
+          data: {
+            test: 1
+          }
+        })
+        await store.dispatch('order/add')
+      } catch (e) {
+        console.log('Reject pay: ', e)
+      }
 
-    const total = computed(() => {
-      return Object.keys(props.cart).reduce(
-        (acc, id) => acc + store.getters['product/get'](id).price * props.cart[id],
-        0)
-    })
+      await router.push('/orders/' + user.value.id)
+    }
 
     return {
-      title,
-      price,
-      total,
-      currency
+      isEmpty,
+      totalPrice,
+      currency,
+      isAuth,
+      authForm,
+      onPay
     }
   },
-  components: { AppChangeCartCount }
+  components: { AppDialog, UserAuthForm, CartTableItem }
 
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="breadcrumbs" v-if="back">
-    <router-link to="/" class="text-white">Вернуться к списку товаров</router-link>
+  <div class="breadcrumbs" v-if="backRoute">
+    <router-link :to="backRoute" class="text-white">{{ backRouteText }}</router-link>
   </div>
   <div :class="['card',{'center':center}, className]">
 
@@ -25,6 +25,14 @@ export default {
     back: {
       type: Boolean,
       default: false
+    },
+    backRoute: {
+      type: Object,
+      default: null
+    },
+    backRouteText: {
+      type: String,
+      default: ''
     },
     center: {
       type: Boolean,

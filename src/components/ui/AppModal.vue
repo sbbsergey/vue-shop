@@ -8,6 +8,7 @@
 </template>
 
 <script>
+// TODO заменить на компонент AppDialog.vue
 export default {
   emits: ['close'],
   props: {

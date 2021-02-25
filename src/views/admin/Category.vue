@@ -2,20 +2,19 @@
   <app-loader v-if="loading" />
   <app-page
     v-else
-    header
     :title="title"
-    :back-route="{name:'AdminProducts'}"
-    back-route-text="Вернуться к списку товаров"
+    :back-route="{name:'AdminCategories'}"
+    back-route-text="Вернуться к списку категорий"
   >
     <template #header />
-    <admin-product-form
+    <admin-category-form
       :id="id"
       @remove="remove"
       @update="update"
       @close="close"
-    >
+      >
       <template #edit />
-    </admin-product-form>
+    </admin-category-form>
   </app-page>
 
 </template>
@@ -23,9 +22,9 @@
 <script>
 import AppLoader from '@/components/ui/AppLoader'
 import AppPage from '@/components/ui/AppPage'
-import AdminProductForm from '@/components/admin/AdminProductForm'
+import AdminCategoryForm from '@/components/admin/AdminCategoryForm'
 import { ref, onMounted, toRaw } from 'vue'
-import { useProducts } from '@/use/products'
+import { useCategories } from '@/use/categories'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -43,7 +42,7 @@ export default {
       title,
       remove: removeCategory,
       update: updateCategory
-    } = useProducts(props)
+    } = useCategories(props)
 
     onMounted(async () => {
       await loadCategories()
@@ -52,7 +51,7 @@ export default {
 
     const remove = async (id) => {
       console.log('remove', id)
-      await router.push('/admin/products')
+      await router.push({ name: 'AdminCategories' })
       await removeCategory(id)
     }
 
@@ -62,7 +61,7 @@ export default {
     }
 
     const close = async (values) => {
-      await router.push('/admin/products')
+      await router.push({ name: 'AdminCategories' })
     }
 
     return {
@@ -74,6 +73,6 @@ export default {
 
     }
   },
-  components: { AppLoader, AppPage, AdminProductForm }
+  components: { AppLoader, AppPage, AdminCategoryForm }
 }
 </script>

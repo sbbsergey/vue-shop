@@ -19,26 +19,31 @@ export function useProducts (props) {
   }
 
   const products = computed(() => store.getters['product/getAll'])
-
   const product = computed(() => store.getters['product/get'](props.id))
+  const title = computed(() => store.getters['product/get'](props.id).title ?? '')
+  const price = computed(() => store.getters['product/get'](props.id).price ?? 0)
+  const rest = computed(() => parseInt(store.getters['product/get'](props.id).count) ?? 0)
+  const categoryTitle = computed(() => {
+    const categoryType = store.getters['product/get'](props.id).category
+    const categories = store.getters['category/get']
+    return categories.find(item => item.type === categoryType).title ?? ''
+  })
 
-  // !!! протестировать использование
-  const productById = computed((id) => store.getters['product/get'](id))
-
-  const remove = async (id) => {
-    await store.dispatch('product/remove', id)
-  }
-  const update = async (data) => {
-    await store.dispatch('product/update', data)
-  }
+  const remove = async (id) => await store.dispatch('product/remove', id)
+  const update = async (data) => await store.dispatch('product/update', data)
+  const add = async (data) => await store.dispatch('product/add', data)
 
   return {
     products,
     product,
-    productById,
+    title,
+    price,
+    rest,
     load,
     update,
     loadById,
-    remove
+    remove,
+    add,
+    categoryTitle
   }
 }

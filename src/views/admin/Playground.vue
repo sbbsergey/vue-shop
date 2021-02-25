@@ -7,7 +7,7 @@
 
 <script>
 import data from '../../../database.json'
-import axios from '@/axios/product'
+import axios from '@/axios/db'
 export default {
 
   setup () {

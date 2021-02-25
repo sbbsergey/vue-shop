@@ -1,12 +1,11 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
+import { computed } from 'vue'
 
-export function useProductForm (fn) {
-  const { isSubmitting, handleSubmit } = useForm({
-    initialValues: {
-      count: 0,
-      price: 0
-    }
+export function useProductForm (submit, initialValues) {
+  console.log('initialValues', initialValues)
+  const { isSubmitting, handleSubmit, handleReset, meta, values } = useForm({
+    initialValues: initialValues
   })
 
   const { value: category, errorMessage: categoryError, handleBlur: categoryBlur } = useField(
@@ -14,7 +13,7 @@ export function useProductForm (fn) {
     yup
       .string()
       .trim()
-      .required('Выберите категорию')
+      .required('Необходимо выбрать категорию товара')
   )
 
   const { value: title, errorMessage: titleError, handleBlur: titleBlur } = useField(
@@ -35,14 +34,22 @@ export function useProductForm (fn) {
     'price',
     yup
       .number()
+      .required('Введите цену товара!')
+      .positive('Цена не может быть отрицательной!')
+
   )
   const { value: count, errorMessage: countError, handleBlur: countBlur } = useField(
     'count',
     yup
       .number()
+      .min(0, 'Остаток не может быть отрицательным!')
   )
 
-  const onSubmit = handleSubmit(fn)
+  const changed = computed(() => {
+    return Object.keys(values).some((key) => values[key] !== meta.value.initialValues[key])
+  })
+
+  const onSubmit = handleSubmit(submit)
 
   return {
     category,
@@ -61,6 +68,9 @@ export function useProductForm (fn) {
     countError,
     countBlur,
     isSubmitting,
-    onSubmit
+    onSubmit,
+    changed,
+    handleReset,
+    meta
   }
 }

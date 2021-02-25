@@ -1,4 +1,4 @@
-import axios from '@/axios/product'
+import axios from '@/axios/db'
 import { error } from '@/utils/error'
 import { converFirebaseDataToArray } from '@/utils/firebase'
 

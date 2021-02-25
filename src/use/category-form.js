@@ -1,9 +1,11 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
+import { computed } from 'vue'
 
-export function useCategoryForm (fn) {
-  const { isSubmitting, handleSubmit, meta } = useForm()
-
+export function useCategoryForm (submit, initialValues) {
+  const { isSubmitting, handleSubmit, handleReset, meta, values } = useForm({
+    initialValues: initialValues
+  })
   const { value: title, errorMessage: titleError, handleBlur: titleBlur } = useField(
     'title',
     yup
@@ -20,7 +22,11 @@ export function useCategoryForm (fn) {
       .required('Введите тип категории')
   )
 
-  const onSubmit = handleSubmit(fn)
+  const changed = computed(() => {
+    return Object.keys(values).some((key) => values[key] !== meta.value.initialValues[key])
+  })
+
+  const onSubmit = handleSubmit(submit)
 
   return {
     title,
@@ -31,6 +37,8 @@ export function useCategoryForm (fn) {
     typeBlur,
     isSubmitting,
     onSubmit,
-    meta
+    meta,
+    changed,
+    handleReset
   }
 }

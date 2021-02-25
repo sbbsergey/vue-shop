@@ -9,7 +9,7 @@
     <td>{{ product.category }}</td>
     <td>{{ product.count }}</td>
     <td>
-      <button class="btn" @click="$router.push(`/admin/product/${product.id}`)">Просмотреть</button>
+      <button class="btn" @click="$emit('open', product.id)">Открыть</button>
     </td>
   </tr>
 </template>
@@ -17,6 +17,7 @@
 <script>
 import { currency } from '@/utils/currency'
 export default {
+  emits: ['open'],
   props: {
     product: {
       type: Object,

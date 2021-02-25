@@ -1,12 +1,14 @@
 <template>
   <app-loader v-if="loading" />
   <app-page title="Товары" v-else :className="'card-filter'">
-    <products-filter v-model="filter"
-                     :categories="categories">
-    </products-filter>
-    <products-table :products="products"
-                    @clickOnProductCard="routeToProductCard"
-    ></products-table>
+    <products-filter
+      v-model="filter"
+      :categories="categories"
+    />
+    <products-table
+      :products="products"
+      @clickOnProductCard="routeToProductCard"
+    />
   </app-page>
 </template>
 

@@ -1,4 +1,4 @@
-import axios from '@/axios/product'
+import axios from '@/axios/db'
 import { error } from '@/utils/error'
 import { converFirebaseDataToArray } from '@/utils/firebase'
 
@@ -6,38 +6,32 @@ export default {
   namespaced: true,
   state () {
     return {
-      categories: {}
+      categories: []
     }
   },
   mutations: {
-    setCategories (state, categories) {
-      // !!!
-      // используется двойное преобразование
-      // из объекта в массив, потом в объект
-      // нужно переделать
-      state.categories = categories.reduce((acc, item) => {
-        acc[item.type] = item
-        return acc
-      }, {})
+    set (state, categories) {
+      state.categories = categories
     },
     remove (state, id) {
-      console.log(id)
-      console.log(state.categories)
-      const type = Object.keys(state.categories).find(key => state.categories[key].id === id).type
-      //      const type = state.categories.find(item => item.id === id).type
-      if (type) {
-        delete state.categories[type]
-      }
+      const index = state.categories.findIndex(item => item.id === id)
+      state.categories.splice(index, 1)
     },
     add (state, category) {
-      state.categories[category.type] = category
+      state.categories.push(category)
+    },
+    update (state, payload) {
+      const item = state.categories.find(item => item.id === payload.id)
+      Object.keys(item).forEach((key) => { item[key] = payload[key] })
     }
   },
   actions: {
     async load ({ commit, dispatch }) {
       try {
         const { data } = await axios.get('categories.json')
-        commit('setCategories', converFirebaseDataToArray(data))
+        if (data) {
+          commit('set', converFirebaseDataToArray(data))
+        }
         commit('clearMessage', null, { root: true })
       } catch (e) {
         dispatch('setMessage', {
@@ -70,14 +64,30 @@ export default {
           type: 'danger'
         }, { root: true })
       }
+    },
+    async update ({ commit, dispatch }, payload) {
+      try {
+        const { data } = await axios.patch(`categories/${payload.id}/.json`, payload)
+        if (data) {
+          commit('update', payload)
+        }
+      } catch (e) {
+        dispatch('setMessage', {
+          value: error('UPDATE_CATEGORY_ERROR'),
+          type: 'danger'
+        }, { root: true })
+      }
     }
   },
   getters: {
     get (state) {
       return state.categories
     },
+    getById: (state) => (id) => {
+      return state.categories.find(item => item.id === id)
+    },
     isEmpty (state) {
-      return Object.keys(state.categories).length === 0
+      return state.categories.length === 0
     }
   }
 }

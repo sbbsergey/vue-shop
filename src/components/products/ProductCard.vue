@@ -5,7 +5,7 @@
       </div>
 
       <div v-if="$slots.category">
-        <slot name="category" category="какая-то категория"></slot>
+        <slot name="category" :category="categoryTitle"></slot>
       </div>
 
       <div v-if="$slots.title">
@@ -17,10 +17,12 @@
       </div>
       <template v-else>
         <div class="product-controls in-card" v-if="count">
-          <app-change-cart-count :id="id"></app-change-cart-count>
+          <cart-count-change
+            :id="id"
+          />
         </div>
         <div class="text-center" v-else>
-          <button class="btn" @click.stop="$store.commit('cart/increment',id)">{{ currency(product.price) }}</button>
+          <button class="btn" @click.stop="inc(id)">{{ currency(product.price) }}</button>
         </div>
       </template>
 
@@ -28,11 +30,10 @@
 
 <script>
 
-import { useStore } from 'vuex'
-import { computed } from 'vue'
 import { currency } from '@/utils/currency'
-import AppChangeCartCount from '@/components/ui/AppChangeCartCount'
+import CartCountChange from '@/components/cart/CartCountChange'
 import { useProducts } from '@/use/products'
+import { useCart } from '@/use/cart'
 
 export default {
   props: {
@@ -42,19 +43,17 @@ export default {
     }
   },
   setup (props) {
-    const store = useStore()
-    const {
-      product
-    } = useProducts(props)
-
-    const count = computed(() => store.getters['cart/get'](props.id))
+    const { product, categoryTitle } = useProducts(props)
+    const { count, inc } = useCart(props)
 
     return {
       product,
+      categoryTitle,
       currency,
-      count
+      count,
+      inc
     }
   },
-  components: { AppChangeCartCount }
+  components: { CartCountChange }
 }
 </script>
