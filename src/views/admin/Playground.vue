@@ -17,18 +17,14 @@ export default {
 
       products.forEach(async (item) => {
         const { data } = await axios.post('products.json', item)
-        console.log(data)
         await axios.patch(`products/${data.name}.json`, { id: data.name })
       })
     }
 
     const loadCategories = () => {
       const categories = data.categories
-      //      categories.length = 1
-
       categories.forEach(async (item) => {
         const { data } = await axios.post('categories.json', item)
-        console.log(data)
         await axios.patch(`categories/${data.name}.json`, { id: data.name })
       })
     }

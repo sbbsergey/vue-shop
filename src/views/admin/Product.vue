@@ -51,13 +51,11 @@ export default {
     })
 
     const remove = async (id) => {
-      console.log('remove', id)
       await router.push('/admin/products')
       await removeCategory(id)
     }
 
     const update = async (values) => {
-      console.log('update', values)
       await updateCategory(toRaw(values))
     }
 

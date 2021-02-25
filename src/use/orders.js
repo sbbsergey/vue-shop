@@ -14,7 +14,6 @@ export function useOrders (props) {
     await store.dispatch('order/loadById', id)
   }
   const loadByUserId = async (userId) => {
-    console.log('loadByUserId', userId)
     await store.dispatch('order/loadByUserId', userId)
   }
 

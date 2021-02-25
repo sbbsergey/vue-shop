@@ -3,7 +3,6 @@ import * as yup from 'yup'
 import { computed } from 'vue'
 
 export function useProductForm (submit, initialValues) {
-  console.log('initialValues', initialValues)
   const { isSubmitting, handleSubmit, handleReset, meta, values } = useForm({
     initialValues: initialValues
   })
